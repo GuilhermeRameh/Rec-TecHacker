@@ -1,5 +1,5 @@
 import pandas as pd
-import socket
+import dns
 import ipaddress
 # import scrapp
 
@@ -33,14 +33,15 @@ def check_public_cloud(ip):
 
 def perform_dns_scan(domain):
     try:
-        ip = socket.gethostbyname(domain)
-        provider = check_public_cloud(ip)
+        ips = dns.resolver.resolve(domain)
+        for ip in ips:
+            provider = check_public_cloud(ip)
         if provider:
             print(f"The domain {domain} is hosted on {provider}.")
         else:
             print(f"The domain {domain} is not hosted on a public cloud.")
         return provider
-    except socket.gaierror:
+    except:
         print(f"DNS resolution failed for domain {domain}.")
         return "FAILED"
 
