@@ -1,8 +1,6 @@
 import pandas as pd
 import whois
-# import scrapp
 
-# scrapp.lista_universidades
 
 ####################### HARDCODED LIST OF UNIS ###############################
 dic = {'Universidades': 
@@ -53,7 +51,9 @@ dic = {'Universidades':
         'USP',
         'UNICAMP',
         'UNESP',
-        'UNIVESP'
+        'UNIVESP',
+        '~Teste~ Netflix',
+        '~Teste~ VSCode',
         ],
 
         'Sites': 
@@ -103,7 +103,9 @@ dic = {'Universidades':
          'https://www5.usp.br/',
          'http://www.unicamp.br/',
          'http://www.unesp.br/',
-         'https://univesp.br/'
+         'https://univesp.br/',
+         'http://www.netflix.com',
+         'https://www.visualstudio.com',
         ]
     }
 
@@ -112,12 +114,16 @@ df.to_csv("./uni_sites.csv")
 ###########################################################################
 
 def check_cloud_provider(server_name):
-    if 'amazonaws' in server_name:
+    if any(string in server_name for string in ['amazonaws', 'awsdns']):
         return 'AWS'
     elif 'azure' in server_name:
         return 'Azure'
     elif 'google' in server_name:
         return 'Google Cloud'
+    elif 'oraclecloud' in server_name:
+        return 'Oracle Cloud'
+    elif any(string in server_name for string in ['hostgator']):
+        return "Hostgator"
     else:
         return 'Private Cloud'
 
@@ -125,8 +131,12 @@ def check_public_cloud(site):
     w = whois.whois(site)
     result = []
     if w:
-        for server in w.name_server:
-            prov = check_cloud_provider(server)
+        servidores = w.name_server
+        if servidores == None:
+            servidores = w.name_servers
+
+        for server in servidores:
+            prov = check_cloud_provider(server.lower())
             if prov not in result:
                 result.append(prov)  
         return result
@@ -145,4 +155,4 @@ for id, uni, site in lista_universidades:
         new_row = {"Universidade":uni, "Provedor":prov}
         df_retorno.loc[len(df_retorno)] = new_row
 
-print(df_retorno)
+df_retorno.to_csv("./output.csv")
