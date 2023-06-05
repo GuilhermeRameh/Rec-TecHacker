@@ -8,3 +8,5 @@ A ferramenta usa da biblioteca `whois` e `pandas` para python. Whois faz scans d
 
 ## Entrada vs Saida:
 Como entrada, selecionei "na mão" 48 universidades públicas, e seus sites (fonte: wikipedia), e mais dois testes para a Netflix e o site do VsCode, que ambos são hosteados em infraestrutura que estamos checando nesse projeto, portanto era esperado conseguirmos essas informações.
+
+A entrada é salva no .csv "uni_sites.csv", e o output é guardado em "output.csv". Ambos podem ser visualizados com a biblioteca `pandas`.
